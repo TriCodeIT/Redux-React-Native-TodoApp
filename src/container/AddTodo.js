@@ -1,20 +1,52 @@
 import React from 'react';
-import {StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
+import {connect} from 'react-redux';
+import {
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import {addTodo} from '../redux/actions/todos';
 
-const AddTodo = () => {
-  return (
-    <View style={styles.container}>
-      <View style={styles.left}>
-        <TextInput placeholder='Add Todo' style={styles.text}/>
+class AddTodo extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      txtTodo: '',
+    };
+  }
+
+  render() {
+    return (
+      <View style={styles.container}>
+        <View style={styles.left}>
+          <TextInput
+            placeholder="Add Todo"
+            onChangeText={txtTodo => this.setState({txtTodo})}
+            value={this.state.txtTodo}
+            style={styles.text}
+          />
+        </View>
+        <TouchableOpacity 
+        onPress={() => {
+          let txtTodo = this.state.txtTodo
+          this.setState({txtTodo: ''}, () => this.props.tambahTodo(txtTodo))
+        }}
+        style={styles.btnAdd}>
+          <Text style={{color: 'white'}}>Add</Text>
+        </TouchableOpacity>
       </View>
-      <TouchableOpacity style={styles.right}>
-        <Text style={{color: 'white'}}>Add</Text>
-      </TouchableOpacity>
-    </View>
-  );
-};
+    );
+  }
+}
 
-export default AddTodo;
+const mapDispatchToProps = dispatch => ({
+  tambahTodo: txt => dispatch(addTodo(txt)),
+});
+
+export default connect(null, mapDispatchToProps)(AddTodo);
 
 const styles = StyleSheet.create({
   container: {
@@ -25,16 +57,16 @@ const styles = StyleSheet.create({
     height: 50,
     width: '85%',
   },
-  right: {
+  btnAdd: {
     backgroundColor: 'blue',
     height: 50,
     width: '15%',
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   text: {
     fontSize: 20,
     fontWeight: 'bold',
-    backgroundColor: 'white'
-  }
+    backgroundColor: 'white',
+  },
 });

@@ -1,17 +1,18 @@
 import React from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import FooterLink from '../components/FooterLink';
+import { SHOW_ALL, SHOW_ACTIVE, SHOW_COMPLETED} from '../redux/actions/types';
 
 const Footer = () => {
   return (
     <View style={styles.container}>
-      <FooterLink>
+      <FooterLink myfilter={SHOW_ALL}>
         <Text style={{color: 'white'}}>All</Text>
       </FooterLink>
-      <FooterLink>
+      <FooterLink myfilter={SHOW_ACTIVE}>
         <Text style={{color: 'white'}}>Active</Text>
       </FooterLink>
-      <FooterLink>
+      <FooterLink myfilter={SHOW_COMPLETED}>
         <Text style={{color: 'white'}}>Completed</Text>
       </FooterLink>
     </View>

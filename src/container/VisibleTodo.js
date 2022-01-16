@@ -1,39 +1,55 @@
 import React from 'react';
+import {connect} from 'react-redux';
 import {StyleSheet, Text, View, FlatList} from 'react-native';
 import TodoItem from '../components/TodoItem';
+import {toggleTodo} from '../redux/actions/todos';
+import todos from '../redux/reducers/todos';
+import {SHOW_ACTIVE, SHOW_ALL, SHOW_COMPLETED} from '../redux/actions/types';
 
 const VisibleTodo = props => {
   // renderItem1 = ({item, index}) => (
   //   <Text style={{fontSize: 25}}>{item.key}</Text>
   // );
 
-  state = {
-    todos: [
-      {
-        id: new Date().getTime(),
-        text: 'Belajar React Native',
-        completed: false,
-      },
-      {
-        id: new Date().getTime() + 1,
-        text: 'Belajar Redux',
-        completed: true,
-      },
-    ],
-  };
-
   return (
-    <FlatList
-      style={styles.container}
-      data={this.state.todos}
-      keyExtractor={(item, index) => index.toString()}
-      ItemSeparatorComponent={() => <Text style={styles.itemSeparator} />}
-      renderItem={({item, index}) => <TodoItem myTodo={item} />}
-    />
+    <>
+      {/* <Text>{JSON.stringify(props)}</Text> */}
+      <FlatList
+        style={styles.container}
+        data={props.myTodos}
+        keyExtractor={(item, index) => index.toString()}
+        ItemSeparatorComponent={() => <Text style={styles.itemSeparator} />}
+        renderItem={({item, index}) => (
+          <TodoItem onPress={() => props.toggleList(item.id)} myTodo={item} />
+        )}
+      />
+    </>
   );
 };
 
-export default VisibleTodo;
+const filterTodo = (todos, myFilter) => {
+  switch (myFilter) {
+    case SHOW_ALL:
+      return todos;
+    case SHOW_ACTIVE:
+      return todos.filter(td => !td.completed);
+    case SHOW_COMPLETED:
+      return todos.filter(td => td.completed);
+    default:
+      alert('Not Defined' + myFilter);
+      return todos;
+  }
+};
+
+const mapStateToProps = state => ({
+  myTodos: filterTodo(state.todos, state.visibilityFilter) 
+});
+
+const mapDispatchToProps = dispatch => ({
+  toggleList: id => dispatch(toggleTodo(id)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(VisibleTodo);
 
 const styles = StyleSheet.create({
   container: {
