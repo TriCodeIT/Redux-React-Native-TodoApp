@@ -1,4 +1,4 @@
-import {ADD_TODO, TOGGLE_TODO} from '../actions/types';
+import {ADD_TODO, DELETE_TODO, TOGGLE_TODO} from '../actions/types';
 
 const initialState = [
   {
@@ -28,6 +28,9 @@ const todos = (state = initialState, action) => {
       return state.map(todo =>
         todo.id === action.id ? {...todo, completed: !todo.completed} : todo,
       );
+    case DELETE_TODO:
+      const newTodos = state.filter(td => td.id !== action.id);
+      return newTodos;
     default:
       return state;
   }

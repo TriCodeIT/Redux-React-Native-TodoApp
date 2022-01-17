@@ -2,7 +2,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {StyleSheet, Text, View, FlatList} from 'react-native';
 import TodoItem from '../components/TodoItem';
-import {toggleTodo} from '../redux/actions/todos';
+import {confirmDelete, toggleTodo} from '../redux/actions/todos';
 import todos from '../redux/reducers/todos';
 import {SHOW_ACTIVE, SHOW_ALL, SHOW_COMPLETED} from '../redux/actions/types';
 
@@ -20,7 +20,11 @@ const VisibleTodo = props => {
         keyExtractor={(item, index) => index.toString()}
         ItemSeparatorComponent={() => <Text style={styles.itemSeparator} />}
         renderItem={({item, index}) => (
-          <TodoItem onPress={() => props.toggleList(item.id)} myTodo={item} />
+          <TodoItem
+            onPress={() => props.toggleList(item.id)}
+            onDelete={() => props.onDelete(item.id)}
+            myTodo={item}
+          />
         )}
       />
     </>
@@ -42,11 +46,12 @@ const filterTodo = (todos, myFilter) => {
 };
 
 const mapStateToProps = state => ({
-  myTodos: filterTodo(state.todos, state.visibilityFilter) 
+  myTodos: filterTodo(state.todos, state.visibilityFilter),
 });
 
 const mapDispatchToProps = dispatch => ({
   toggleList: id => dispatch(toggleTodo(id)),
+  onDelete: id => dispatch(confirmDelete(id)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(VisibleTodo);
